@@ -86,7 +86,7 @@ namespace Lab8CSharp
 
                     if (ch == ')')
                     {
-                        operators.Pop(); // Видаляємо відкриваючу дужку
+                        operators.Pop();
 
                         if (operators.Count > 0 && (operators.Peek() == 'm' || operators.Peek() == 'M'))
                         {
@@ -109,7 +109,7 @@ namespace Lab8CSharp
         static void task1()
         {
             Console.Write("Task 1\n");
-            string filePath = "formula.txt"; // Замініть шлях на ваш файл
+            string filePath = "formula.txt";
             string formula;
 
             try
@@ -125,10 +125,69 @@ namespace Lab8CSharp
             int result = EvaluateFormula(formula);
             Console.WriteLine("Res " + formula + " = " + result);
         }
+
+        class Employee
+        {
+            public string LastName { get; set; }
+            public string FirstName { get; set; }
+            public string MiddleName { get; set; }
+            public char Gender { get; set; }
+            public int Age { get; set; }
+            public double Salary { get; set; }
+        }
+
         static void task2()
         {
             Console.Write("Task 2\n");
+            // Читаємо дані з файлу та розподіляємо їх по вікових групах
+            Queue<Employee> under30Employees = new Queue<Employee>();
+            Queue<Employee> otherEmployees = new Queue<Employee>();
 
+            string filePath = "employees.txt"; // Шлях до файлу з даними
+            string[] lines = File.ReadAllLines(filePath);
+
+            foreach (string line in lines)
+            {
+                string[] data = line.Split(' ');
+
+                // Перевіряємо, чи в рядку є всі необхідні дані
+                if (data.Length == 6)
+                {
+                    Employee employee = new Employee
+                    {
+                        LastName = data[0],
+                        FirstName = data[1],
+                        MiddleName = data[2],
+                        Gender = char.Parse(data[3]),
+                        Age = int.Parse(data[4]),
+                        Salary = double.Parse(data[5])
+                    };
+
+                    if (employee.Age < 30)
+                        under30Employees.Enqueue(employee);
+                    else
+                        otherEmployees.Enqueue(employee);
+                }
+                else
+                {
+                    // Якщо дані не повні, виводимо повідомлення про помилку
+                    Console.WriteLine("Помилка: Неправильний формат даних у рядку: " + line);
+                }
+            }
+
+            Console.WriteLine("Employees > 30: ");
+            while (under30Employees.Count > 0)
+            {
+                Employee employee = under30Employees.Dequeue();
+                Console.WriteLine($"{employee.LastName} {employee.FirstName} {employee.MiddleName}, {employee.Gender}, {employee.Age}, {employee.Salary}");
+            }
+
+            Console.WriteLine("\n Other: ");
+            while (otherEmployees.Count > 0)
+            {
+                Employee employee = otherEmployees.Dequeue();
+                Console.WriteLine($"{employee.LastName} {employee.FirstName} {employee.MiddleName}, {employee.Gender}, {employee.Age}, {employee.Salary}");
+            }
         }
         static void task3()
         {
