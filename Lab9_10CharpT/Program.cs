@@ -140,18 +140,17 @@ namespace Lab8CSharp
         static void task2()
         {
             Console.Write("Task 2\n");
-            // Читаємо дані з файлу та розподіляємо їх по вікових групах
+
             Queue<Employee> under30Employees = new Queue<Employee>();
             Queue<Employee> otherEmployees = new Queue<Employee>();
 
-            string filePath = "employees.txt"; // Шлях до файлу з даними
+            string filePath = "employees.txt"; 
             string[] lines = File.ReadAllLines(filePath);
 
             foreach (string line in lines)
             {
                 string[] data = line.Split(' ');
 
-                // Перевіряємо, чи в рядку є всі необхідні дані
                 if (data.Length == 6)
                 {
                     Employee employee = new Employee
@@ -171,8 +170,7 @@ namespace Lab8CSharp
                 }
                 else
                 {
-                    // Якщо дані не повні, виводимо повідомлення про помилку
-                    Console.WriteLine("Помилка: Неправильний формат даних у рядку: " + line);
+                    Console.WriteLine("Error " + line);
                 }
             }
 
@@ -190,11 +188,152 @@ namespace Lab8CSharp
                 Console.WriteLine($"{employee.LastName} {employee.FirstName} {employee.MiddleName}, {employee.Gender}, {employee.Age}, {employee.Salary}");
             }
         }
+
+
+
+        static int EvaluateFormulaAL(string formula)
+        {
+            ArrayList operands = new ArrayList();
+            ArrayList operators = new ArrayList();
+
+            foreach (char ch in formula)
+            {
+                if (ch == '(')
+                {
+                    operators.Add(ch);
+                }
+                else if (char.IsDigit(ch))
+                {
+                    operands.Add(int.Parse(ch.ToString()));
+                }
+                else if (ch == 'm' || ch == 'M')
+                {
+                    operators.Add(ch);
+                }
+                else if (ch == ',' || ch == ')')
+                {
+                    while (operators.Count > 0 && (char)operators[operators.Count - 1] != '(' && operands.Count >= 2)
+                    {
+                        char op = (char)operators[operators.Count - 1];
+                        operators.RemoveAt(operators.Count - 1);
+
+                        int operand2 = (int)operands[operands.Count - 1];
+                        operands.RemoveAt(operands.Count - 1);
+
+                        int operand1 = (int)operands[operands.Count - 1];
+                        operands.RemoveAt(operands.Count - 1);
+
+                        if (op == 'm')
+                            operands.Add(Math.Min(operand1, operand2));
+                        else if (op == 'M')
+                            operands.Add(Math.Max(operand1, operand2));
+                    }
+
+                    if (ch == ')')
+                    {
+                        operators.RemoveAt(operators.Count - 1);
+
+                        if (operators.Count > 0 && ((char)operators[operators.Count - 1] == 'm' || (char)operators[operators.Count - 1] == 'M'))
+                        {
+                            char op = (char)operators[operators.Count - 1];
+                            operators.RemoveAt(operators.Count - 1);
+
+                            int operand2 = (int)operands[operands.Count - 1];
+                            operands.RemoveAt(operands.Count - 1);
+
+                            int operand1 = (int)operands[operands.Count - 1];
+                            operands.RemoveAt(operands.Count - 1);
+
+                            if (op == 'm')
+                                operands.Add(Math.Min(operand1, operand2));
+                            else if (op == 'M')
+                                operands.Add(Math.Max(operand1, operand2));
+                        }
+                    }
+                }
+            }
+
+            return (int)operands[0];
+        }
+
+
+        static void Task1AL()
+        {
+            Console.Write("\nTask 1 ArrayList\n");
+            string filePath = "formula.txt";
+            string formula;
+
+            try
+            {
+                formula = System.IO.File.ReadAllText(filePath);
+            }
+            catch (System.IO.IOException e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+                return;
+            }
+
+            int result = EvaluateFormulaAL(formula);
+            Console.WriteLine("Res " + formula + " = " + result);
+        }
+
+        static void Task2AL()
+        {
+            Console.Write("\nTask 2 ArrayList\n");
+
+            ArrayList under30Employees = new ArrayList();
+            ArrayList otherEmployees = new ArrayList();
+
+            string filePath = "employees.txt";
+            string[] lines = System.IO.File.ReadAllLines(filePath);
+
+            foreach (string line in lines)
+            {
+                string[] data = line.Split(' ');
+
+                if (data.Length == 6)
+                {
+                    Employee employee = new Employee
+                    {
+                        LastName = data[0],
+                        FirstName = data[1],
+                        MiddleName = data[2],
+                        Gender = char.Parse(data[3]),
+                        Age = int.Parse(data[4]),
+                        Salary = double.Parse(data[5])
+                    };
+
+                    if (employee.Age < 30)
+                        under30Employees.Add(employee);
+                    else
+                        otherEmployees.Add(employee);
+                }
+                else
+                {
+                    Console.WriteLine("Error " + line);
+                }
+            }
+
+            Console.WriteLine("Employees < 30: ");
+            foreach (Employee employee in under30Employees)
+            {
+                Console.WriteLine($"{employee.LastName} {employee.FirstName} {employee.MiddleName}, {employee.Gender}, {employee.Age}, {employee.Salary}");
+            }
+
+            Console.WriteLine("\nOther: ");
+            foreach (Employee employee in otherEmployees)
+            {
+                Console.WriteLine($"{employee.LastName} {employee.FirstName} {employee.MiddleName}, {employee.Gender}, {employee.Age}, {employee.Salary}");
+            }
+        }
+
         static void task3()
         {
             Console.Write("Task 3\n");
-
+            Task1AL();
+            Task2AL();
         }
+
         static void task4()
         {
             Console.WriteLine("Task 4\n");
