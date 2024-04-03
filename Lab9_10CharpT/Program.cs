@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
@@ -197,7 +198,42 @@ namespace Lab8CSharp
         static void task4()
         {
             Console.WriteLine("Task 4\n");
-            
+
+            Hashtable catalog = new Hashtable();
+
+            catalog.Add("CD1", new ArrayList() { "Shape of You - Ed Sheeran", "Dance Monkey - Tones and I", "Bohemian Rhapsody - Queen" });
+            catalog.Add("CD2", new ArrayList() { "Billie Jean - Michael Jackson", "Sweet Child O' Mine - Guns N' Roses", "Hotel California - Eagles" });
+
+            catalog.Remove("CD2");
+
+            ((ArrayList)catalog["CD1"]).Add("Yesterday - The Beatles");
+
+            foreach (DictionaryEntry entry in catalog)
+            {
+                Console.WriteLine("CD: " + entry.Key);
+                ArrayList songs = (ArrayList)entry.Value;
+                foreach (string song in songs)
+                {
+                    Console.WriteLine("- " + song);
+                }
+            }
+
+            string[] artistsToSearch = { "Ed Sheeran", "Michael Jackson", "Queen" };
+
+            foreach (DictionaryEntry entry in catalog)
+            {
+                ArrayList songs = (ArrayList)entry.Value;
+                foreach (string song in songs)
+                {
+                    foreach (string artistToSearch in artistsToSearch)
+                    {
+                        if (song.Contains(artistToSearch))
+                        {
+                            Console.WriteLine("Song: " + song + " is performed by " + artistToSearch);
+                        }
+                    }
+                }
+            }
         }
 
     }
